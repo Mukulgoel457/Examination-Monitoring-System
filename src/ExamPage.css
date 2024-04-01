@@ -1,0 +1,120 @@
+/* examPage.css */
+
+.exam-page {
+    font-family: 'Arial', sans-serif;
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f7f7f7;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .exam-header {
+    background-color: #333;
+    color: white;
+    padding: 20px;
+    border-radius: 8px 8px 0 0;
+  }
+  
+  .exam-header h1 {
+    margin: 0;
+    padding: 0;
+  }
+  
+  .timer {
+    background-color: #444;
+    color: #ade4ff;
+    padding: 5px 10px;
+    display: inline-block;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 25px;
+  }
+  
+  .question-container {
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+  }
+  
+  .options-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .options-list li {
+    background-color: #eee;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px;
+  }
+  
+  .options-list li:hover,
+  .options-list li input[type="radio"]:checked + label {
+    background-color: #ddd;
+    margin-right: 10px;
+  }
+  
+  .options-list label {
+    cursor: pointer;
+  display: block;
+  width: 100%;
+  margin-left: 10px; /* Space before the text */
+  font-size: 1.2em; /* Larger font size for the options */
+  }
+  
+  .submit-answer-btn {
+    background-color: #5cb85c;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    font-size: 1.1em; /* Larger font size for buttons */
+
+  }
+  
+  .submit-answer-btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  .submit-exam-container {
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  .submit-exam-btn {
+    background-color: #337ab7;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .submit-warning {
+    color: #e67e22;
+    font-weight: bold;
+    padding: 10px;
+    background-color: #f6e58d;
+    margin: 10px 0;
+    border-radius: 5px;
+    text-align: center;
+  }
+  
+  /* You may want to add some responsive design features */
+  @media (max-width: 768px) {
+    .exam-page {
+      width: 95%;
+    }
+  }
+  

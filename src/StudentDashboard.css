@@ -1,0 +1,75 @@
+.student-dashboard {
+  display: flex;
+  flex-direction: row; /* Stack elements vertically */
+  align-items: center; /* Center-align the content */
+  padding-top: 60px; /* Account for fixed navbar */
+}
+
+.student-info {
+  width: 100%; /* Full width of the container */
+  background-color: #f2f2f2; /* Light grey background */
+  padding: 20px; /* Padding inside the container */
+  margin-bottom: 20px; /* Space between sections */
+  margin-right: 120px;;
+}
+
+.registered-exams {
+  width: 100%; /* Full width */
+  overflow-y: auto; /* Enable vertical scrolling for overflow */
+  max-height: calc(100vh - 160px); /* Height minus the navbar and some extra space */
+  padding: 20px; /* Padding inside */
+  background-color: #fff; /* White background */
+  border: 1px solid #ddd; /* Border for the container */
+  margin-bottom: 20px; /* Space below the container */
+}
+
+ul {
+  padding-left: 0; /* Remove default padding */
+  list-style-type: none; /* Remove list item bullets */
+}
+
+li {
+  background-color: #f7f7f7; /* Light grey background for each item */
+  border: 1px solid #ddd; /* Border for the list items */
+  margin-bottom: 10px; /* Space between list items */
+  padding: 15px; /* Padding inside list items */
+  border-radius: 5px; /* Rounded corners */
+  }
+  
+  /* Navbar styles */
+  .navbar {
+  /* Your existing navbar styles */
+  position: fixed;
+  top: 0;
+  width: 60%;
+  background-color: #333;
+  color: white;
+  padding: 10px 20px;
+  z-index: 10; /* Ensure navbar is above other elements */
+  }
+  
+  /* Button styles */
+  button {
+  background-color: #5C6BC0;
+  color: white;
+  padding: 10px 20px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px; /*Space below buttons */
+  }
+  
+  button:hover {
+  background-color: #3F51B5;
+  }
+  
+  @media (max-width: 768px) {
+  /* Styles for smaller screens */
+  .student-info,
+  .registered-exams {
+  width: 90%; /* Slightly smaller width on small screens */
+  }
+  
+  /* You might want to adjust padding and margins for smaller screens */
+  }
