@@ -66,11 +66,6 @@ We welcome contributions to the Examination Monitoring System. If you are lookin
 * Add your changes and commit them with a meaningful commit message.
 * Push the changes to your fork and submit a pull request.
 
-
-
-
-
-
 # React + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
@@ -79,3 +74,13 @@ Currently, two official plugins are available:
 
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+
+
+### Additional Information
+- **Front End**: Describes the user interface technologies and features.
+- **Backend**: Details the server-side configurations, focusing on security with JWT and RESTful APIs.
+- **Database**: Provides insights into the data management strategy, highlighting MySQL as the storage solution with a description of key tables.
+
+This enhanced README provides a holistic view of the project, ensuring that potential contributors and users fully understand its structure and capabilities. Feel free to adjust the content to better fit your project's specifics or
+
