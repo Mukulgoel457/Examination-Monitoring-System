@@ -9,6 +9,31 @@ The Examination Monitoring System is a web-based application designed to automat
 - **Hot Module Replacement (HMR)**: Ensures that updates are reflected instantly without needing a page refresh, which is crucial during development for efficiency.
 - **ESLint**: Helps maintain code quality through strict syntax and style guidelines.
 
+## Front End
+The front end of the Examination Monitoring System is built using React, providing a responsive and intuitive user interface. It uses Vite as the build tool for a faster and more efficient development experience.
+
+### Features
+- **Dynamic Forms**: React components for form inputs that validate data in real-time.
+- **Live Updates**: Utilizing WebSocket for real-time updates during examinations.
+- **Accessibility Features**: High contrast modes and screen reader support ensure that the application is accessible to all users.
+
+## Backend
+The backend is implemented using Node.js, which handles all server-side logic and database interactions. It provides RESTful APIs that the front end consumes.
+
+### Security
+- **Authentication**: Secure login mechanisms with JWT for maintaining user sessions.
+- **Authorization**: Role-based access control to ensure users can only access appropriate resources.
+
+## Database
+The system uses MySQL for data storage. Database schemas are designed to support complex queries efficiently.
+
+### Tables
+- **Users**: Stores user credentials and roles.
+- **Exams**: Contains exam details, questions, and options.
+- **Results**: Records students' answers and grades.
+
+
+
 ## Plugins Used
 - **[@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md)**: Utilizes Babel for implementing Fast Refresh. This setup helps in maintaining state while making changes to the React components, providing a smoother development experience.
 - **[@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc)**: Uses the SWC compiler which acts as a faster alternative to Babel, improving build performance.
