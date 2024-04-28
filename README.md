@@ -50,6 +50,7 @@ The system uses MySQL for data storage. Database schemas are designed to support
    ```bash
    npm install
 4. **Run the developement server**:
+   ```bash
    npm run dev
 
 ## Usage
