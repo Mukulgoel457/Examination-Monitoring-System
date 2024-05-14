@@ -49,9 +49,12 @@ The system uses MySQL for data storage. Database schemas are designed to support
 3. **Install Dependencies**:
    ```bash
    npm install
-4. **Run the developement server**:
+4. **Run the front end**:
    ```bash
    npm run dev
+5. **Run the backend server**:
+   ```bash
+   node server.js
 
 ## Usage
 * ***Admin Dashboard:*** Allows administrators to oversee all examinations, manage questions, and view performance metrics.
