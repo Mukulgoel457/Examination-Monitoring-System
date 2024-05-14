@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './ExamReview.css';
+import { Button, Spin, List, Card, Typography } from 'antd';
+//import 'antd/dist/antd.css'; // Ensure to import Ant Design CSS
+
+const { Title, Text } = Typography;
 
 function ExamReview() {
-  const [registeredExams, setRegisteredExams] = useState([]); // Store registered exams
+  const [registeredExams, setRegisteredExams] = useState([]);
   const [reviewData, setReviewData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch registered exams on component mount
   useEffect(() => {
     const fetchRegisteredExams = async () => {
       setIsLoading(true);
@@ -23,7 +25,6 @@ function ExamReview() {
     fetchRegisteredExams();
   }, []);
 
-  // Function to fetch review data for a specific exam
   const fetchReviewData = async (examId) => {
     setIsLoading(true);
     try {
@@ -36,43 +37,47 @@ function ExamReview() {
     }
   };
 
-  // Function to handle button click for a specific exam
   const handleReviewButtonClick = (examId) => {
-    fetchReviewData(examId); // Fetch review data for the new exam ID
+    fetchReviewData(examId);
   };
 
   return (
-    <div className='exam-review-container'>
-      <h1>Exam Review</h1>
-      {registeredExams.map((exam) => (
-        <button key={exam.exam_id} onClick={() => handleReviewButtonClick(exam.exam_id)}>
-          Show Review for {exam.subject}
-        </button>
-      ))}
+    <div className='exam-review-container' style={{ padding: 24 }}>
+      <Title level={1}>Exam Review</Title>
+      {isLoading && <Spin size="large" />}
 
-      {isLoading ? (
-        <div className='loading-div'>Loading exam review...</div>
+      <List
+        grid={{ gutter: 16, column: 4 }}
+        dataSource={registeredExams}
+        renderItem={exam => (
+          <List.Item>
+            <Button type="primary" onClick={() => handleReviewButtonClick(exam.exam_id)}>
+              Show Review for {exam.subject}
+            </Button>
+          </List.Item>
+        )}
+      />
+
+      {!isLoading && reviewData.length > 0 ? (
+        <Card title="Exam Review Details">
+          <List
+            dataSource={reviewData}
+            renderItem={item => (
+              <List.Item>
+                <Card type="inner" title={`Question: ${item.question}`}>
+                  <Text>Your Answer: {item.selectedOption}</Text><br />
+                  <Text>Correct Answer: {item.correctOption}</Text><br />
+                  <Text style={item.isCorrect ? { color: 'green', fontWeight: 'bold' } : { color: 'red', fontWeight: 'bold' }}>
+                    {item.isCorrect ? 'Correct' : 'Incorrect'}
+                  </Text><br />
+                  <Text>Time Taken: {item.timeTaken} seconds.</Text>
+                </Card>
+              </List.Item>
+            )}
+          />
+        </Card>
       ) : (
-        <div className='review-content'>
-          {reviewData.length > 0 ? (
-            <>
-              <h2>Exam Review Details</h2>
-              <ul>
-                {reviewData.map((item, index) => (
-                  <li key={index}>
-                    <h3>Question: {item.question}</h3>
-                    <p>Your Answer: {item.selectedOption}</p>
-                    <p>Correct Answer: {item.correctOption}</p>
-                    <p>{item.isCorrect ? 'Correct' : 'Incorrect'}</p>
-                    <p>Time Taken: {item.timeTaken} seconds.</p>
-                  </li>
-                ))}
-              </ul>
-            </>
-          ) : (
-            <p>No review data available for this exam.</p>
-          )}
-        </div>
+        !isLoading && <Text>No review data available for this exam.</Text>
       )}
     </div>
   );
