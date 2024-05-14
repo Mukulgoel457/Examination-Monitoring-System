@@ -1,158 +1,141 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './StudentDashboard.css';
+import { Button, Card, List, Typography, Modal, message, Space } from 'antd';
+import moment from 'moment';
+
+const { Title } = Typography;
 
 function StudentDashboard() {
     const [studentInfo, setStudentInfo] = useState(null);
     const [registeredExams, setRegisteredExams] = useState([]);
-    const [examPerformance, setExamPerformance] = useState([]);
+    const [completedExams, setCompletedExams] = useState([]);
     const navigate = useNavigate();
 
-    // Fetch student info, registered exams, and exam performance on component mount
     useEffect(() => {
         fetchStudentInfo();
-        fetchRegisteredExams();
-        //fetchExamPerformance();
+        fetchExams();
     }, []);
 
     const fetchStudentInfo = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/get-user-info', {
-                withCredentials: true, // Necessary for cookies to be sent or for passing along auth headers
-            });
-            const responseData = response.data;
-            if (responseData.status === 'success') {
-                setStudentInfo(responseData.user);
+            const response = await axios.get('http://localhost:3001/get-user-info', { withCredentials: true });
+            if (response.data.status === 'success') {
+                setStudentInfo(response.data.user);
             } else {
-                console.error('Failed to fetch user info');
+                message.error('Failed to fetch user info');
             }
         } catch (error) {
-            console.error('There was an error fetching user info!', error);
+            message.error('There was an error fetching user info!');
         }
     };
 
-    const fetchRegisteredExams= async()=>{
-        try{
-            const response = await axios.get('http://localhost:3001/registered-exams', {
-                withCredentials: true
-            });
-            const responseData = response.data;
-            if (responseData.status === 'success') {
-                setRegisteredExams(responseData.exams); // Assuming the response has an exams field
+    const fetchExams = async () => {
+        try {
+            const [registeredResponse, completedResponse] = await Promise.all([
+                axios.get('http://localhost:3001/registered-exams', { withCredentials: true }),
+                axios.get('http://localhost:3001/completed-exams', { withCredentials: true })
+            ]);
+            if (registeredResponse.data.status === 'success') {
+                setRegisteredExams(registeredResponse.data.exams);
             } else {
-                console.error('Failed to fetch registered exams');
+                message.error('Failed to fetch registered exams');
             }
-
-        }catch(error){
-            console.error('There was an error fetching registered exams: ',error);
-        }
-    }
-
-    const navigateToExam = async () => {
-        try {
-           navigate('/examList');
-        } catch (error) {
-            console.error('There was an error!', error);
-        }
-    };
-
-    const navigateToPerformance= async () => {
-        navigate(`/performance`); // Adjust the route as needed
-    };
-
-    const navigateToReview= async () => {
-        navigate('/review')
-    };
-
-    const handleStartExam = async (examId) => {
-        try {
-          const response = await axios.post('http://localhost:3001/start-exam', { examId }, { withCredentials: true });
-          const responseData = await response.data;
-          if (responseData.status === 'success') {
-            // Redirect to the ExamPage component with the exam details passed as state
-            navigate(`/exam/${examId}`, { state: { examDetails: responseData.exam } });
-          } else {
-            console.error('Failed to start exam');
-          }
-        } catch (error) {
-          console.error('There was an error starting the exam:', error);
-        }
-      };
-      
-
-    const handleCancelRegistration= async (examId) => {
-        //console.log(examId);
-        try{
-            const response = await axios.delete(`http://localhost:3001/cancelRegistration/${examId}`,
-                {withCredentials: true}
-            );
-            if (response.data.status==='success'){
-                alert('Exam registration cancelled successfully!');
-                fetchRegisteredExams();
+            if (completedResponse.data.status === 'success') {
+                setCompletedExams(completedResponse.data.exams);
+            } else {
+                message.error('Failed to load completed exams');
             }
-            else{
-                alert('Failed to cancel the registration.')
-            }
+        } catch (error) {
+            message.error('There was an error fetching exams');
         }
-        catch(error){
-            console.error('There was an error cancelling the registration:',error);
-            alert('An error occurred. Please try again later.')
-        };
     };
 
-    const handleLogout = async () => {
-        try {
-            // Implement logout logic, typically a fetch request to your backend
-            navigate('/'); // Redirect to login page after successful logout
-        } catch (error) {
-            console.error('Error logging out:', error);
-        }
+    const handleCancelRegistration = async (examId) => {
+        Modal.confirm({
+            title: 'Are you sure you want to cancel this registration?',
+            onOk: async () => {
+                try {
+                    const response = await axios.delete(`http://localhost:3001/cancelRegistration/${examId}`, { withCredentials: true });
+                    if (response.data.status === 'success') {
+                        message.success('Exam registration cancelled successfully!');
+                        fetchExams(); // Refresh the exam lists
+                    } else {
+                        message.error('Failed to cancel the registration.');
+                    }
+                } catch (error) {
+                    message.error('There was an error cancelling the registration: ' + error.message);
+                }
+            },
+        });
     };
 
     return (
         <div className="student-dashboard">
-            <div className="navbar">
-                <button onClick={handleLogout}>Logout</button>
-            </div>
-            <div className="student-info">
+            <Card title="Student Information">
                 {studentInfo ? (
                     <>
-                        <h2>Student Information</h2>
-                        <p>Name: {studentInfo.name}</p>
-                        <p>Email: {studentInfo.email}</p>
+                        <Title level={4}>Name: {studentInfo.name}</Title>
+                        <Title level={4}>Email: {studentInfo.email}</Title>
+                        <Space>
+                            <Button onClick={() => navigate('/')}>Logout</Button>
+                            <Button onClick={() => navigate('/examList')}>Register for Exam</Button>
+                            <Button onClick={() => navigate('/performance')}>View Performance</Button>
+                            <Button onClick={() => navigate('/review')}>Exam Review</Button>
+                        </Space>
                     </>
                 ) : (
                     <p>Loading student information...</p>
                 )}
-                <div className="actions">
-                <button onClick={navigateToExam}>Register for Exam</button>
-                <button onClick={navigateToPerformance}>View Performance</button>
-                <button onClick={navigateToReview}>Exam Review</button>
-            </div>
-            </div>
-            
-            <div className="registered-exams">
-                <h2>Registered Exams</h2>
-                {registeredExams.length > 0 ? (
-                    <ul>
-                        {registeredExams.map((exam, index) => (
-                            <li key={index}>
-                                <p>Exam ID: {exam.exam_id}</p>
-                                <p>Subject: {exam.subject}</p>
-                                <p>Date: {exam.exam_date}</p>
-                                <p>Exam duration: {exam.exam_duration}</p>
-                                <p>Total Marks: {exam.total_marks}</p>
-                                <p>Fees: {exam.fees}</p>
-                                <button onClick={() => handleStartExam(exam.exam_id)}>Start Exam</button>
-                                <button onClick={() => handleCancelRegistration(exam.exam_id)}>Cancel Registration</button> 
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No exams registered.</p>
-                )}
-            </div>
+            </Card>
+            <Card title="Registered Exams">
+                <List
+                    itemLayout="horizontal"
+                    dataSource={registeredExams.filter(exam => !completedExams.some(e => e.exam_id === exam.exam_id))}
+                    renderItem={exam => (
+                        <List.Item
+                            actions={[
+                                <Button key="start" type="primary" onClick={() => navigate(`/exam/${exam.exam_id}`)}>Start Exam</Button>,
+                                <Button key="cancel" danger onClick={() => handleCancelRegistration(exam.exam_id)}>Cancel Registration</Button>
+                            ]}
+                        >
+                            <List.Item.Meta
+                                title={exam.subject}
+                                description={
+                                    <>
+                                        <h4>Exam ID: {exam.exam_id}</h4>
+                                        <div>Exam on: {moment(exam.exam_date).format('DD-MM-YY')}</div>
+                                        <div>Duration: {exam.exam_duration}</div>
+                                        <div>Total Marks: {exam.total_marks}</div>
+                                        <div>Fees: {exam.fees}</div>
+                                    </>
+                                }
+                            />
+                        </List.Item>
+                    )}
+                />
+            </Card>
+            <Card title="Completed Exams">
+                <List
+                    itemLayout="horizontal"
+                    dataSource={completedExams}
+                    renderItem={exam => (
+                        <List.Item>
+                            <List.Item.Meta
+                                title={exam.subject}
+                                description={
+                                    <>
+                                            <h4>{exam.exam_id}</h4>
+                                            <div>Completed on {moment(exam.exam_date ? exam.exam_date : new Date()).format('DD-MM-YY')}</div>
+
+                                    </>
+                                    
+                                }
+                            />
+                        </List.Item>
+                    )}
+                />
+            </Card>
         </div>
     );
 }
