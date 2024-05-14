@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './Performance.css';
+import { Card, Col, Row, Typography, Spin } from 'antd';
+//import 'antd/dist/antd.css'; // Ensure to import Ant Design CSS
+
+const { Title, Text } = Typography;
 
 function PerformanceReview() {
   const [performanceData, setPerformanceData] = useState(null);
@@ -27,28 +30,28 @@ function PerformanceReview() {
   };
 
   return (
-    <div>
-      <h1>Performance Review</h1>
-      <div className="exam-container"> {/* Add this wrapper for CSS grid */}
+    <div style={{ padding: '24px' }}>
+      <Title level={2}>Performance Review</Title>
       {performanceData ? (
         Object.entries(performanceData).map(([examId, examDetails]) => (
-          <div key={examId} className='exam-box'>
-            <h2>Exam ID: {examId}</h2>
-            {examDetails.map(detail => (
-              <div key={`${examId}_${detail.difficulty_level}`} className='detail-box'>
-                <h3>Difficulty Level: {detail.difficulty_level}</h3>
-                <p>Questions Answered: {detail.questions_answered}</p>
-                <p>Correctly Answered: {detail.correct_answers}</p>
-                <p>Incorrectly Answered: {detail.incorrect_answers}</p>
-                <p>Average Time Taken: {parseFloat(detail.average_time).toFixed(2)} seconds</p>
-              </div>
-            ))}
-          </div>
+          <Card key={examId} title={`Exam ID: ${examId}`} style={{ marginBottom: '20px' }}>
+            <Row gutter={16}>
+              {examDetails.map(detail => (
+                <Col span={8} key={`${examId}_${detail.difficulty_level}`}>
+                  <Card type="inner" title={`Difficulty Level: ${detail.difficulty_level}`}>
+                    <Text>Questions Answered: {detail.questions_answered}</Text><br />
+                    <Text>Correctly Answered: {detail.correct_answers}</Text><br />
+                    <Text>Incorrectly Answered: {detail.incorrect_answers}</Text><br />
+                    <Text>Average Time Taken: {parseFloat(detail.average_time).toFixed(2)} seconds</Text>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+          </Card>
         ))
       ) : (
-        <p>Loading performance data...</p>
+        <Spin size="large" />
       )}
-      </div> {/* Close the exam-container div */}
     </div>
   );
 }
