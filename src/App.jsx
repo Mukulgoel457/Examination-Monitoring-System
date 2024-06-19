@@ -10,6 +10,7 @@ import ExamList from './ExamList'; // Adjust the import path to where your ExamL
 import ExamPage from './ExamPage';
 import Performance from './Performance';
 import ExamReview from './ExamReview';
+import './index.css';
 
 function App() {
   return (
