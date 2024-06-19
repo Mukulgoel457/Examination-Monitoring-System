@@ -3,7 +3,7 @@ CREATE TABLE users (
     name VARCHAR(255) NOT NULL primary key,
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
-    role ENUM('Student', 'Professor') NOT NULL
+    role ENUM('Student', 'Admin') NOT NULL
 );
 
 CREATE TABLE students (
@@ -27,17 +27,18 @@ create table exams(
     total_marks int not null,
     fees decimal(10,2) not null,
     number_of_questions int not null,
-    exam_duration Time(50) not null
+    exam_duration Time(6) not null
 );
 
 CREATE TABLE student_exams (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
-    exam_id varchar NOT NULL,
+    exam_id VARCHAR(255) NOT NULL,
     registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(student_id),
     FOREIGN KEY (exam_id) REFERENCES exams(exam_id)
 );
+
 
 CREATE TABLE questions (
     qid INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,13 +51,14 @@ CREATE TABLE questions (
 );
 
 CREATE TABLE exam_scores (
-    exam_id INT NOT NULL,
+    exam_id VARCHAR(255) NOT NULL,
     student_id INT NOT NULL,
     score DECIMAL(5, 2) NOT NULL,
     PRIMARY KEY (exam_id, student_id),
     FOREIGN KEY (exam_id) REFERENCES exams(exam_id),
     FOREIGN KEY (student_id) REFERENCES students(student_id)
 );
+
 
 CREATE TABLE exam_responses (
     response_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -71,6 +73,10 @@ CREATE TABLE exam_responses (
     FOREIGN KEY (question_id) REFERENCES questions(qid)
 );
 
+INSERT INTO exams (exam_id, subject, exam_date, total_marks, fees, number_of_questions, exam_duration) VALUES
+('DA214', 'Database Management System', '2024-03-24', 10, 70.00, 10, '01:00:00'),
+('DA244', 'Statistics and Probability', '2024-03-26', 10, 100.00, 10, '01:30:00'),
+('MA201', 'Mathematics', '2024-03-25', 10, 50.00, 10, '02:00:00');
 
 
 INSERT INTO questions (exam_id, qcontent, qoptions, correct_option_id, difficulty_level) VALUES
@@ -103,19 +109,19 @@ insert into questions (exam_id,qcontent,qoptions,correct_option_id,difficulty_le
 ('MA201', 'What is the solution to the differential equation dy/dx = 3y?', '[{"id":1,"text":"y=Ce^(3x)"},{"id":2,"text":"y=3xe^(x)"},{"id":3,"text":"y=3e^(x)"},{"id":4,"text":"y=3x+C"}]', 1, 4),
 ('MA201', 'If the matrix A is 2x2 with a determinant of 5, what is the determinant of 3A?', '[{"id":1,"text":"45"},{"id":2,"text":"15"},{"id":3,"text":"5"},{"id":4,"text":"3"}]', 2, 3);
 
-insert into questions (exam_id,qcontent,qoptions,correct_option_id,difficulty_level) VALUES
-('DA214','What does DBMS stand for?', '[{"id":1,"text":"Database Management System"},{"id":2,"text":"Database Maintaining System"},{"id":3,"text":"Data Management System"},{"id":4,"text":"Data Maintaining System"}]', 1, 1),
+INSERT INTO questions (exam_id, qcontent, qoptions, correct_option_id, difficulty_level) VALUES
+('DA214', 'What does DBMS stand for?', '[{"id":1,"text":"Database Management System"},{"id":2,"text":"Database Maintaining System"},{"id":3,"text":"Data Management System"},{"id":4,"text":"Data Maintaining System"}]', 1, 1),
 ('DA214', 'Which language is used by most DBMSs for database access?', '[{"id":1,"text":"C++"},{"id":2,"text":"Java"},{"id":3,"text":"Structured Query Language"},{"id":4,"text":"Python"}]', 3, 1),
 ('DA214', 'What is the purpose of a database schema?', '[{"id":1,"text":"To store data in a structured format"},{"id":2,"text":"To define the structure of the database"},{"id":3,"text":"To query the database"},{"id":4,"text":"To manage database connections"}]', 2, 2),
 ('DA214', 'Which of the following is not a type of database model?', '[{"id":1,"text":"Relational model"},{"id":2,"text":"Hierarchical model"},{"id":3,"text":"Network model"},{"id":4,"text":"Linear model"}]', 4, 2),
-('DA214', 'What is the purpose of a database index?', '[{"id":1,"text":"To store data in a structured format"},{"id":2,"text":"To define the structure of the database"},{"id":3,"text":"To query the database"},{"id":4,"text":"To improve the performance of data retrieval"}]', 4, 3);
+('DA214', 'What is the purpose of a database index?', '[{"id":1,"text":"To store data in a structured format"},{"id":2,"text":"To define the structure of the database"},{"id":3,"text":"To query the database"},{"id":4,"text":"To improve the performance of data retrieval"}]', 4, 3),
 ('DA214', 'In SQL, which command is used to remove a table and all its data permanently?', '[{"id":1,"text":"DELETE"},{"id":2,"text":"REMOVE"},{"id":3,"text":"DROP"},{"id":4,"text":"TRUNCATE"}]', 3, 2),
 ('DA214', 'What does SQL stand for?', '[{"id":1,"text":"Structured Question Language"},{"id":2,"text":"Structured Query Language"},{"id":3,"text":"Simple Query Language"},{"id":4,"text":"Sequential Query Language"}]', 2, 1),
 ('DA214', 'A database schema is:', '[{"id":1,"text":"The physical database"},{"id":2,"text":"The DBMS"},{"id":3,"text":"The design of a database"},{"id":4,"text":"The data in a database"}]', 3, 2),
 ('DA214', 'Which normal form is considered adequate for normal relational database design?', '[{"id":1,"text":"1NF"},{"id":2,"text":"2NF"},{"id":3,"text":"3NF"},{"id":4,"text":"4NF"}]', 3, 3),
 ('DA214', 'A unique key constraint ensures what about the data?', '[{"id":1,"text":"Data is duplicated"},{"id":2,"text":"Data is deleted"},{"id":3,"text":"Data is not duplicated"},{"id":4,"text":"Data is updated"}]', 3, 1),
 ('DA214', 'Which command is used to add new rows to a database table?', '[{"id":1,"text":"ADD"},{"id":2,"text":"INSERT INTO"},{"id":3,"text":"UPDATE"},{"id":4,"text":"CREATE"}]', 2, 1),
-('DA214', 'What is a primary key?', '[{"id":1,"text":"A constraint that ensures unique data"},{"id":2,"text":"A key that is primary to database design"},{"id":3,"text":"The main key used by the DBMS"},{"id":4,"text":"The first key made in a table"}]', 1, 2),
+('DA214', 'What is a primary key?', '[{"id":1,"text":"A constraint that ensures unique data"},{"id":2,"text":"A key that is primary to database design"},{"id":3,"text":"The main key used by the DBMS"},{"id":4,"text":"The first key made in a table"}]', 1, 2);
 
 INSERT INTO questions (exam_id, qcontent, qoptions, correct_option_id, difficulty_level) VALUES
 ('DA214', 'Which of the following is not a type of SQL join?', '[{"id":1,"text":"INNER JOIN"}, {"id":2,"text":"OUTER JOIN"}, {"id":3,"text":"LINK JOIN"}, {"id":4,"text":"CROSS JOIN"}]', 3, 2),
@@ -177,9 +183,4 @@ INSERT INTO questions (exam_id, qcontent, qoptions, correct_option_id, difficult
 ('DA244', 'What is the probability of selecting a red card and a face card from a standard deck of 52 cards?', '[{"id":1,"text":"1/13"},{"id":2,"text":"1/4"},{"id":3,"text":"1/2"},{"id":4,"text":"1/26"}]', 4, 4),
 ('DA244', 'What is the probability of selecting a red card given that a face card has been selected from a standard deck of 52 cards?', '[{"id":1,"text":"1/13"},{"id":2,"text":"1/4"},{"id":3,"text":"1/2"},{"id":4,"text":"1/26"}]', 3, 4),
 ('DA244', 'What is the probability of selecting a face card given that a red card has been selected from a standard deck of 52 cards?', '[{"id":1,"text":"1/13"},{"id":2,"text":"1/4"},{"id":3,"text":"1/2"},{"id":4,"text":"1/26"}]', 2, 4),
-('DA244', 'If the odds in favor of an event are 3:2, what is the probability of the event occurring?', '[{"id":1,"text":"0.6"},{"id":2,"text":"0.3"},{"id":3,"text":"0.5"},{"id":4,"text":"0.4"}]', 1, 5);
-
-
-
-
-
+('DA244', 'If the odds in favor of an event are 3:2, what is the probability of the event occurring?', '[{"id":1,"text":"0.6"},{"id":2,"text":"0.3"},{"id":3,"text":"0.5"},{"id":4,"text":"0.4"}]', 1, 5);
