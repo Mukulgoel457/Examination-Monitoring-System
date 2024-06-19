@@ -1,19 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import './AdminDashboard.css';
+import { Modal, Button, Input, Form, Select } from 'antd';
+//import 'antd/dist/antd.css'; // Import AntD stylesheet
+import './index.css'; // Make sure your custom styles don't conflict
 
 function AdminDashboard() {
     const [adminInfo, setAdminInfo] = useState(null);
-    const [newExam, setNewExam] = useState({
-        examId: '',
-        subject: '',
-        examDate: '',
-        totalMarks: '',
-        fees: '',
-        numberOfQuestions: '',
-        examDuration: ''
-    });
+    const [form] = Form.useForm();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -21,14 +15,12 @@ function AdminDashboard() {
     }, []);
 
     const fetchAdminInfo = async () => {
-        // Fetch admin info logic
         try {
             const response = await axios.get('http://localhost:3001/get-user-info', {
-                withCredentials: true, // Necessary for cookies to be sent or for passing along auth headers
+                withCredentials: true,
             });
-            const responseData = response.data;
-            if (responseData.status === 'success') {
-                setAdminInfo(responseData.user);
+            if (response.data.status === 'success') {
+                setAdminInfo(response.data.user);
             } else {
                 console.error('Failed to fetch user info');
             }
@@ -37,78 +29,38 @@ function AdminDashboard() {
         }
     };
 
-    const handleInputChange = (event) => {
-        const { name, value } = event.target;
-        setNewExam(prevState => ({ ...prevState, [name]: value }));
-    };
-
-    const resetForm = () => {
-        setNewExam({
-            examId: '',
-            subject: '',
-            examDate: '',
-            totalMarks: '',
-            fees: '',
-            numberOfQuestions: '',
-            examDuration: ''
-        });
-    };
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
+    const handleSubmit = async (values) => {
         try {
-            // Send the new exam details to the server
-            const response = await axios.post('http://localhost:3001/exams', newExam, {
+            const response = await axios.post('http://localhost:3001/exams', values, {
                 withCredentials: true,
             });
-            
-            // Check if the request was successful
             if (response.data.status === 'success') {
-                // Provide a success message to the admin
                 console.log('Exam registered successfully');
-                alert('Exam registered successfully!');
-                // Clear the form after successful registration
-                setNewExam({
-                    subject: '',
-                    examDate: '',
-                    totalMarks: '',
-                    fees: '',
-                    numberOfQuestions: '',
-                    examDuration: ''
+                Modal.success({
+                    title: 'Success',
+                    content: 'Exam registered successfully!',
                 });
-                // Optionally, navigate to a different page, such as the exams list
-                // navigate('/admin-exams-list');
+                form.resetFields(); // Reset form after successful submission
             } else {
-                // If the server responded with an error, alert the admin
                 console.error('Error registering new exam:', response.data.message);
-                alert('Error registering new exam: ' + response.data.message);
+                Modal.error({
+                    title: 'Error',
+                    content: `Error registering new exam: ${response.data.message}`,
+                });
             }
         } catch (error) {
-            // Handle errors if the server sends a non-2xx response or if there's a network issue
             console.error('Error registering new exam:', error);
-            alert('Error registering new exam. Please try again.');
-        }
-    };
-
-    const handleLogout = async () => {
-        // Logout logic
-	try {
-            const response = await axios.post('http://localhost:3001/logout', {}, { withCredentials: true });
-            const responseData = response.data;
-            if (responseData.status === 'success') {
-                navigate('/'); 
-            } else {
-                console.error('Logout failed');
-            }
-        } catch (error) {
-            console.error('There was an error!', error);
+            Modal.error({
+                title: 'Error',
+                content: 'Error registering new exam. Please try again.',
+            });
         }
     };
 
     return (
         <div className="admin-dashboard">
             <div className="navbar">
-                <button onClick={handleLogout}>Logout</button>
+                <Button onClick={() => navigate('/')} type="primary">Logout</Button>
             </div>
             {adminInfo ? (
                 <div className="admin-info">
@@ -117,68 +69,42 @@ function AdminDashboard() {
                     <p>Email: {adminInfo.email}</p>
                 </div>
             ) : (
-                <div>Loading admin information...</div>
+                <p>Loading admin information...</p>
             )}
-            <div className="new-exam-form">
-                <h2>Register New Exam</h2>
-                <form onSubmit={handleSubmit}>
-                    <input 
-                        type="text" 
-                        name="examId" 
-                        value={newExam.examId} 
-                        onChange={handleInputChange}  
-                        placeholder="Exam ID" 
-                        required />
-                    <input
-                        type="text"
-                        name="subject"
-                        value={newExam.subject}
-                        onChange={handleInputChange}
-                        placeholder="Subject"
-                        required />
-                    <input
-                        type="date"
-                        name="examDate"
-                        value={newExam.examDate}
-                        onChange={handleInputChange}
-                        placeholder="Exam Date"
-                        required
-                    />
-                    <input
-                    type="text"
-                    name="examDuration"
-                    value={newExam.examDuration}
-                    onChange={handleInputChange}
-                    placeholder="Exam Duration (e.g., '2 hours')"
-                    required
-                />
-                    <input
-                    type="number"
-                    name="numberOfQuestions"
-                    value={newExam.numberOfQuestions}
-                    onChange={handleInputChange}
-                    placeholder="Number of Questions"
-                    required
-                />
-                    <input
-                        type="number"
-                        name="totalMarks"
-                        value={newExam.totalMarks}
-                        onChange={handleInputChange}
-                        placeholder="Total Marks"
-                        required
-                    />
-                    <input
-                        type="number"
-                        name="fees"
-                        value={newExam.fees}
-                        onChange={handleInputChange}
-                        placeholder="Fees"
-                        required
-                    />
-                    <button type="submit">Register</button>
-                </form>
-            </div>
+            <Form
+                form={form}
+                onFinish={handleSubmit}
+                layout="vertical"
+                className="new-exam-form"
+                requiredMark={false}
+            >
+                <Form.Item name="examId" label="Exam ID" rules={[{ required: true }]}>
+                    <Input placeholder="Enter Exam ID" />
+                </Form.Item>
+                <Form.Item name="subject" label="Subject" rules={[{ required: true }]}>
+                    <Input placeholder="Enter Subject" />
+                </Form.Item>
+                <Form.Item name="examDate" label="Exam Date" rules={[{ required: true }]}>
+                    <Input type="date" />
+                </Form.Item>
+                <Form.Item name="examDuration" label="Exam Duration" rules={[{ required: true }]}>
+                    <Input placeholder="e.g., '2 hours'" />
+                </Form.Item>
+                <Form.Item name="numberOfQuestions" label="Number of Questions" rules={[{ required: true }]}>
+                    <Input type="number" />
+                </Form.Item>
+                <Form.Item name="totalMarks" label="Total Marks" rules={[{ required: true }]}>
+                    <Input type="number" />
+                </Form.Item>
+                <Form.Item name="fees" label="Fees" rules={[{ required: true }]}>
+                    <Input type="number" />
+                </Form.Item>
+                <Form.Item>
+                    <Button type="primary" htmlType="submit" className="login-form-button">
+                        Set Questions
+                    </Button>
+                </Form.Item>
+            </Form>
         </div>
     );
 }
