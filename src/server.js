@@ -190,6 +190,26 @@ app.post('/logout', (req, res) => {
         res.status(201).json({ status: 'success', message: 'Exam registered successfully', examId: examId });
     });
 });
+app.post('/register-questions', (req, res) => {
+    const { examId, questions } = req.body;
+
+    if (!questions || !Array.isArray(questions)) {
+        return res.status(400).json({ error: 'Invalid questions data' });
+    }
+
+    const query = 'INSERT INTO questions (exam_id, qcontent, qoptions, correct_option_id, difficulty_level) VALUES ?';
+    const values = questions.map(q => [examId, q.qcontent, JSON.stringify(q.options), q.correct_option_id, q.difficulty_level]);
+
+    db.query(query, [values], (error, results) => {
+        if (error) {
+            console.error('Failed to insert questions:', error);
+            return res.status(500).json({ status: 'error', message: 'Database operation failed', detail: error.message });
+        }
+        res.json({ status: 'success', message: 'Questions registered successfully', data: results });
+    });
+});
+
+
 
 
 app.get('/examList', (req, res) => {
@@ -321,6 +341,32 @@ app.post('/start-exam', (req, res) => {
             res.json({ status: 'success', question: results[0] });
         } else {
             res.status(404).json({ status: 'error', message: 'No questions found for the specified difficulty' });
+        }
+    });
+});
+
+app.get('/completed-exams', (req, res) => {
+    const studentId = req.session.user.id; // Assuming user ID is stored in session
+
+    // This query selects exams that the student has completed based on the presence of their scores
+    const query = `
+        SELECT es.exam_id, e.subject, e.exam_date, es.score
+        FROM exam_scores es
+        JOIN exams e ON es.exam_id = e.exam_id
+        WHERE es.student_id = ?
+        ORDER BY e.exam_date DESC;
+    `;
+
+    // Execute the query using callback
+    db.query(query, [studentId], (error, results, fields) => {
+        if (error) {
+            console.error('Error fetching completed exams:', error);
+            res.status(500).json({ status: 'error', message: 'Failed to fetch completed exams.' });
+            return;
+        }
+        
+        if (results.length >= 0) {
+            res.json({ status: 'success', exams: results });
         }
     });
 });
