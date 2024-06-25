@@ -32,12 +32,6 @@ The system uses MySQL for data storage. Database schemas are designed to support
 - **Exams**: Contains exam details, questions, and options.
 - **Results**: Records students' answers and grades.
 
-
-
-## Plugins Used
-- **[@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md)**: Utilizes Babel for implementing Fast Refresh. This setup helps in maintaining state while making changes to the React components, providing a smoother development experience.
-- **[@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc)**: Uses the SWC compiler which acts as a faster alternative to Babel, improving build performance.
-
 ## Installation Guide
 1. **Clone the Repository**:
    ```bash
