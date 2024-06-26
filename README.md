@@ -7,7 +7,6 @@ The Examination Monitoring System is a web-based application designed to automat
 - **Framework**: React
 - **Build Tool**: Vite
 - **Hot Module Replacement (HMR)**: Ensures that updates are reflected instantly without needing a page refresh, which is crucial during development for efficiency.
-- **ESLint**: Helps maintain code quality through strict syntax and style guidelines.
 
 ## Front End
 The front end of the Examination Monitoring System is built using React, providing a responsive and intuitive user interface. It uses Vite as the build tool for a faster and more efficient development experience.
