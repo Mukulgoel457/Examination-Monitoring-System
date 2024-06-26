@@ -21,7 +21,7 @@ The front end of the Examination Monitoring System is built using React, providi
 The backend is implemented using Node.js, which handles all server-side logic and database interactions. It provides RESTful APIs that the front end consumes.
 
 ### Security
-- **Authentication**: Secure login mechanisms with JWT for maintaining user sessions.
+- **Authentication**: Secure login mechanisms with hashed passwords stored in database.
 - **Authorization**: Role-based access control to ensure users can only access appropriate resources.
 
 ## Database
